@@ -18,6 +18,7 @@ screen = pg.display.set_mode((x, y))
 counter = 0
 
 # skakanie
+# if img y + 64
 
 pg.display.set_caption('lukas')
 img_pos_x = 0  # #sirka
@@ -37,6 +38,7 @@ bomb_x = []
 bomb_y = []
 num_of_bombs = 6
 z = num_of_bombs
+k = num_of_bombs
 
 # font
 over_font = pygame.font.Font('freesansbold.ttf', 64)
@@ -113,22 +115,22 @@ def add_new_bomb():
     bomb_x.append(random.randint(0, 900 - 64))
     bomb_img.append(pg.image.load('imgs/bomb.png'))
 
-
-
-
 # game loop
+
+n = num_of_bombs
+
+
 is_running = True
 while is_running:
 
     # collision detection
     for i in range(num_of_bombs):
-        if bomb_y[i] < img_pos_y and bomb_y[i] + 64 > img_pos_y and bomb_x[i] < img_pos_x and bomb_x[
-            i] + 64 > img_pos_x:
-            print(num_of_bombs)
+        if bomb_y[i] < img_pos_y and bomb_y[i] + 64 > img_pos_y and bomb_x[i] < img_pos_x and bomb_x[i] + 64 > img_pos_x or img_pos_y + 64 > bomb_y[i] and img_pos_y < bomb_y[i] + 64 and img_pos_x + 64 > bomb_x[i] and img_pos_x < bomb_x[i] + 64:
             for j in range(num_of_bombs):
                 bomb_y[j] = -1000
             mixer.music.stop()
             is_running = False
+
 
     screen.fill((0, 0, 0))
 
@@ -187,39 +189,16 @@ while is_running:
     if can_add:
         if counter % 100 == 0:
             num_of_bombs += 1
-            print(counter)
-            print(num_of_bombs)
             add_new_bomb()
 
     if counter >= 400:
         can_add = False
 
-
-    for i in range(num_of_bombs):
-        if bomb_y[i] < img_pos_y and bomb_y[i] + 64 > img_pos_y and bomb_x[i] < img_pos_x and bomb_x[
-            i] + 64 > img_pos_x:
-            mixer.music.stop()
-            is_running = False
-            for j in range(num_of_bombs):
-                bomb_y[j] = -1000
-
-    while z >= 0:
-        print(z)
-        if bomb_y[z-1] < img_pos_y and bomb_y[z-1] + 64 > img_pos_y and bomb_x[z-1] < img_pos_x and bomb_x[
-            z-1] + 64 > img_pos_x:
-            is_running = False
-            for j in range(num_of_bombs):
-                bomb_y[j] = -1000
-        z -= 1
-
-
-
     pg.display.update()
+
 
 # again
 again = False
 while again == False:
     show_game_over_text()
     pg.display.update()
-
-

@@ -42,6 +42,7 @@ k = num_of_bombs
 
 # font
 over_font = pygame.font.Font('freesansbold.ttf', 64)
+again_font = pygame.font.Font('freesansbold.ttf', 32)
 
 
 # initialize bombs into arrays
@@ -87,6 +88,10 @@ def show_game_over_text():
     over_text = over_font.render("GAME OVER", True, (255, 255, 255))
     screen.blit(over_text, (300, 350))
 
+# show a again text
+def show_game_again_text():
+    over_text = again_font.render("PRESS SPACE BUTTON", True, (255, 255, 255))
+    screen.blit(over_text, (300, 600))
 
 # make a differend get down speed
 speed = [1, 2, 4, 5, 10]
@@ -115,90 +120,107 @@ def add_new_bomb():
     bomb_x.append(random.randint(0, 900 - 64))
     bomb_img.append(pg.image.load('imgs/bomb.png'))
 
-# game loop
 
-n = num_of_bombs
+game_shut_down = False
 
+while not game_shut_down:
+    is_running = True
+    while is_running:
 
-is_running = True
-while is_running:
+        # collision detection
+        for i in range(num_of_bombs):
+            if bomb_y[i] < img_pos_y and bomb_y[i] + 63 > img_pos_y and bomb_x[i] < img_pos_x and bomb_x[
+                i] + 63 > img_pos_x or img_pos_y + 63 > bomb_y[i] and img_pos_y < bomb_y[i] + 63 and img_pos_x + 63 > \
+                    bomb_x[i] and img_pos_x < bomb_x[i] + 63:
+                for j in range(num_of_bombs):
+                    bomb_y[j] = -1000
+                mixer.music.stop()
+                is_running = False
 
-    # collision detection
-    for i in range(num_of_bombs):
-        if bomb_y[i] < img_pos_y and bomb_y[i] + 64 > img_pos_y and bomb_x[i] < img_pos_x and bomb_x[i] + 64 > img_pos_x or img_pos_y + 64 > bomb_y[i] and img_pos_y < bomb_y[i] + 64 and img_pos_x + 64 > bomb_x[i] and img_pos_x < bomb_x[i] + 64:
-            for j in range(num_of_bombs):
-                bomb_y[j] = -1000
-            mixer.music.stop()
-            is_running = False
+        screen.fill((0, 0, 0))
 
+        screen.blit(background_img, (0, 0))
 
-    screen.fill((0, 0, 0))
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                game_shut_down = True
+                is_running == False
 
-    screen.blit(background_img, (0, 0))
+            # player movement
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_LEFT:
+                    change_img_pos_x = -5
+                if event.key == pg.K_RIGHT:
+                    change_img_pos_x = 5
+                if event.key == pg.K_UP:
+                    change_img_pos_y = -5
+                if event.key == pg.K_DOWN:
+                    change_img_pos_y = 5
+            if event.type == pg.KEYUP:
+                if event.type == pg.K_LEFT or pg.K_RIGHT:
+                    change_img_pos_x = 0
+                    change_img_pos_y = 0
 
-    for event in pg.event.get():
-        if event.type == pg.QUIT:
-            is_running == False
+        if img_pos_x >= 836:
+            img_pos_x = 836
 
-        # player movement
-        if event.type == pg.KEYDOWN:
-            if event.key == pg.K_LEFT:
-                change_img_pos_x = -5
-            if event.key == pg.K_RIGHT:
-                change_img_pos_x = 5
-            if event.key == pg.K_UP:
-                change_img_pos_y = -5
-            if event.key == pg.K_DOWN:
-                change_img_pos_y = 5
-        if event.type == pg.KEYUP:
-            if event.type == pg.K_LEFT or pg.K_RIGHT:
-                change_img_pos_x = 0
-                change_img_pos_y = 0
+        if img_pos_x <= 0:
+            img_pos_x = 0
 
-    if img_pos_x >= 836:
-        img_pos_x = 836
+        if img_pos_y >= 733:
+            img_pos_y = 733
 
-    if img_pos_x <= 0:
-        img_pos_x = 0
-
-    if img_pos_y >= 733:
-        img_pos_y = 733
-
-    if img_pos_y <= 0:
-        img_pos_y = 0
-
-    img_pos_x += change_img_pos_x
-    img_pos_y += change_img_pos_y
-
-    # shows a lion
-    player()
-
-    # spawn a bombs
-    for i in range(num_of_bombs):
-        bomb(bomb_x, bomb_y, i)
-
-    # show bombs while not collision
-    for i in range(num_of_bombs):
-        if bomb_y[i] > 800 - 64:
-            bomb_y[i] = 0
-            bomb_x[i] = 0
-            bomb_x[i] = random.randint(0, 900 - 64)
-
-    counter += 1
-
-    if can_add:
-        if counter % 100 == 0:
-            num_of_bombs += 1
-            add_new_bomb()
-
-    if counter >= 400:
-        can_add = False
-
-    pg.display.update()
+        if img_pos_y <= 0:
+            img_pos_y = 0
 
 
-# again
-again = False
-while again == False:
-    show_game_over_text()
-    pg.display.update()
+
+        img_pos_x += change_img_pos_x
+        img_pos_y += change_img_pos_y
+
+        # shows a lion
+        player()
+
+        # spawn a bombs
+        for i in range(num_of_bombs):
+            bomb(bomb_x, bomb_y, i)
+
+        # show bombs while not collision
+        for i in range(num_of_bombs):
+            if bomb_y[i] > 800 - 64:
+                bomb_y[i] = 0
+                bomb_x[i] = 0
+                bomb_x[i] = random.randint(0, 900 - 64)
+
+        counter += 1
+
+        if can_add:
+            if counter % 100 == 0:
+                num_of_bombs += 1
+                add_new_bomb()
+
+        if counter >= 400:
+            can_add = False
+
+        pg.display.update()
+
+
+
+    # again
+    again = False
+    while again == False:
+        screen.fill((0, 0, 0))
+        show_game_over_text()
+        show_game_again_text()
+
+
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                print('shut down')
+
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_SPACE:
+                    is_running = True
+                    again = True
+                    mixer.music.play()
+        pg.display.update()

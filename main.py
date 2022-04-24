@@ -33,12 +33,17 @@ background_img = pg.image.load('imgs/savana3.png')
 # img props: width = 64, high = 64
 img = pg.image.load('imgs/lion.png')
 
+# nuclear explosion img
+exp_img = pg.image.load('imgs/nuclear-explosion.png')
+
 bomb_img = []
 bomb_x = []
 bomb_y = []
 num_of_bombs = 6
 z = num_of_bombs
 k = num_of_bombs
+
+can_show = True
 
 # font
 over_font = pygame.font.Font('freesansbold.ttf', 64)
@@ -88,10 +93,17 @@ def show_game_over_text():
     over_text = over_font.render("GAME OVER", True, (255, 255, 255))
     screen.blit(over_text, (300, 350))
 
+
 # show a again text
 def show_game_again_text():
     over_text = again_font.render("PRESS SPACE BUTTON", True, (255, 255, 255))
     screen.blit(over_text, (300, 600))
+
+
+def show_join_text():
+    join_text = over_font.render("START GAME", True, (255, 255, 255))
+    screen.blit(join_text, (300, 350))
+
 
 # make a differend get down speed
 speed = [1, 2, 4, 5, 10]
@@ -105,7 +117,6 @@ def bomb(x, y, i):
 
 # music
 music = mixer.music.load('background.wav')
-mixer.music.play(-1)
 
 # bomb spawning bool
 can_spawn_bomb = True
@@ -121,10 +132,36 @@ def add_new_bomb():
     bomb_img.append(pg.image.load('imgs/bomb.png'))
 
 
-game_shut_down = False
+join = False
 
-while not game_shut_down:
-    is_running = True
+#####################################################
+
+# easy starting page
+while join == False:
+    screen.fill((0, 0, 0))
+    show_join_text()
+    for event in pg.event.get():
+        if event.type == pg.QUIT:
+            print('shut down')
+
+        if event.type == pg.KEYDOWN:
+            if event.key == pg.K_SPACE:
+                print('game started')
+                mixer.music.play(-1)
+                join = True
+    pg.display.update()
+
+###################################################
+
+# game booleans
+game_shut_down = False
+is_running = True
+
+pg.display.update()
+
+###################################################
+
+while game_shut_down != True:
     while is_running:
 
         # collision detection
@@ -132,9 +169,18 @@ while not game_shut_down:
             if bomb_y[i] < img_pos_y and bomb_y[i] + 63 > img_pos_y and bomb_x[i] < img_pos_x and bomb_x[
                 i] + 63 > img_pos_x or img_pos_y + 63 > bomb_y[i] and img_pos_y < bomb_y[i] + 63 and img_pos_x + 63 > \
                     bomb_x[i] and img_pos_x < bomb_x[i] + 63:
+                can_show = False
                 for j in range(num_of_bombs):
-                    bomb_y[j] = -1000
+                    bomb_x[j] = -1000
+                    print('gggg')
+                    pg.display.update()
+
+                print(i)
+
+                # screen.blit(exp_img, (bomb_x[i], img_pos_y))
+                pg.display.update()
                 mixer.music.stop()
+                time.sleep(5)
                 is_running = False
 
         screen.fill((0, 0, 0))
@@ -173,8 +219,6 @@ while not game_shut_down:
         if img_pos_y <= 0:
             img_pos_y = 0
 
-
-
         img_pos_x += change_img_pos_x
         img_pos_y += change_img_pos_y
 
@@ -186,11 +230,13 @@ while not game_shut_down:
             bomb(bomb_x, bomb_y, i)
 
         # show bombs while not collision
-        for i in range(num_of_bombs):
-            if bomb_y[i] > 800 - 64:
-                bomb_y[i] = 0
-                bomb_x[i] = 0
-                bomb_x[i] = random.randint(0, 900 - 64)
+
+        if can_show == True:
+            for i in range(num_of_bombs):
+                if bomb_y[i] > 800 - 64:
+                    bomb_y[i] = 0
+                    bomb_x[i] = 0
+                    bomb_x[i] = random.randint(0, 900 - 64)
 
         counter += 1
 
@@ -204,7 +250,8 @@ while not game_shut_down:
 
         pg.display.update()
 
-
+    print('kkkkkkk')
+    #################################################
 
     # again
     again = False
@@ -212,7 +259,6 @@ while not game_shut_down:
         screen.fill((0, 0, 0))
         show_game_over_text()
         show_game_again_text()
-
 
         for event in pg.event.get():
             if event.type == pg.QUIT:

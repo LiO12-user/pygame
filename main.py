@@ -21,8 +21,8 @@ counter = 0
 # if img y + 64
 
 pg.display.set_caption('lukas')
-img_pos_x = 0  # #sirka
-img_pos_y = 0  # vyska
+img_pos_x = 900-64  # #sirka
+img_pos_y = 800-64  # vyska
 
 change_img_pos_x = 400
 change_img_pos_y = 800
@@ -170,14 +170,13 @@ while game_shut_down != True:
                 i] + 63 > img_pos_x or img_pos_y + 63 > bomb_y[i] and img_pos_y < bomb_y[i] + 63 and img_pos_x + 63 > \
                     bomb_x[i] and img_pos_x < bomb_x[i] + 63:
                 can_show = False
+
                 for j in range(num_of_bombs):
-                    bomb_x[j] = -1000
-                    print('gggg')
+                    bomb_x[j] = -2000
+                    # despawn bombs
+                    screen.blit(bomb_img[j], (bomb_x[j], bomb_y[j]))
                     pg.display.update()
 
-                print(i)
-
-                # screen.blit(exp_img, (bomb_x[i], img_pos_y))
                 pg.display.update()
                 mixer.music.stop()
                 time.sleep(5)

@@ -78,6 +78,9 @@ class Bomb:
         self.bomb_img_ar = bomb_img
         self.num_of_bombs = nums_of_bombs
         self.speed = random.randint(1, 6)
+        self.last_bomb_posx = 0
+        self.last_bomb_posy = 0
+        self.index = 0
 
     def add_bombs(self):
         for k in range(self.num_of_bombs):
@@ -86,42 +89,28 @@ class Bomb:
             self.bomb_x_ar.append(random.randint(0, 900 - 64))
 
     def show_bomb_explosion(self):
-        self.bomb_img_ar[self.i] = pg.image.load('imgs/nuclear-explosion.png')
-        screen.blit(self.bomb_img_ar[self.i], (self.bomb_x_ar[self.i], self.bomb_y_ar[self.i]))
+        self.bomb_img_ar[self.index] = pg.image.load('imgs/nuclear-explosion.png')
+        screen.blit(self.bomb_img_ar[self.index], (self.last_bomb_posx, self.last_bomb_posy))
         pg.display.update()
+        time.sleep(1)
+
 
     def detect_collision(self):
         for l in range(6):
-            print(self.num_of_bombs)
-            print(l)
-
-            if Player.player_pos_x > self.bomb_x_ar[l] and Player.player_pos_x < self.bomb_x_ar[l] + 64 and Player.player_pos_y > self.bomb_x_ar[l] and Player.player_pos_y < self.bomb_y_ar[l]+64 or Player.player_pos_x+64 > self.bomb_x_ar[l] and Player.player_pos_x < self.bomb_x_ar[l]+64 and Player.player_pos_y +64 > self.bomb_y_ar[l] and Player.player_pos_y < self.bomb_y_ar[l]+64:
+           if player.player_pos_x > self.bomb_x_ar[l] and player.player_pos_x < self.bomb_x_ar[l] + 64 and player.player_pos_y > self.bomb_x_ar[l] and player.player_pos_y < self.bomb_y_ar[l]+64 or player.player_pos_x+64 > self.bomb_x_ar[l] and player.player_pos_x < self.bomb_x_ar[l]+64 and player.player_pos_y +64 > self.bomb_y_ar[l] and player.player_pos_y < self.bomb_y_ar[l]+64:
                 print('collision')
                 self.speed = 0
+                self.last_bomb_posx = self.bomb_x_ar[l]
+                self.last_bomb_posy = self.bomb_y_ar[l]
+                self.index = l
 
                 for j in range(self.num_of_bombs):
                     self.bomb_x_ar[j] = -2000
-                    # despawn bombs
                     screen.blit(self.bomb_img_ar[j], (self.bomb_x_ar[j], self.bomb_y_ar[j]))
                     pg.display.update()
 
-
-
-
-
-    def test(self):
-        for i in range(self.num_of_bombs):
-            if self.bomb_y_ar[i] < Player.player_pos_y and self.bomb_y_ar[i] + 63 > Player.player_pos_y and self.bomb_x_ar[i] < Player.player_pos_x and self.bomb_x_ar[
-                i] + 63 > Player.player_pos_x or Player.player_pos_y + 63 > self.bomb_y_ar[i] and Player.player_pos_y < self.bomb_y_ar[i] + 63 and Player.player_pos_x + 63 > \
-                    self.bomb_x_ar[i] and Player.player_pos_x < self.bomb_x_ar[i] + 63:
-
-                for j in range(self.num_of_bombs):
-                    self.bomb_x_ar[j] = -2000
-                    # despawn bombs
-                    screen.blit(self.bomb_img_ar[j], (self.bomb_x_ar[j], self.bomb_y_ar[j]))
-                    pg.display.update()
-
-
+                return True
+        return False
 
     def show_bombs(self):
         for i in range(self.num_of_bombs):
@@ -148,7 +137,8 @@ if __name__ == "__main__":
 
 while True:
 
-    bomb.test()
+    if bomb.detect_collision():
+        bomb.show_bomb_explosion()
 
     screen.fill((0, 0, 0))
 

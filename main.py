@@ -166,6 +166,7 @@ while game_shut_down != True:
 
         # collision detection
         for i in range(num_of_bombs):
+            print(i)
             if bomb_y[i] < img_pos_y and bomb_y[i] + 63 > img_pos_y and bomb_x[i] < img_pos_x and bomb_x[
                 i] + 63 > img_pos_x or img_pos_y + 63 > bomb_y[i] and img_pos_y < bomb_y[i] + 63 and img_pos_x + 63 > \
                     bomb_x[i] and img_pos_x < bomb_x[i] + 63:

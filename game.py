@@ -12,6 +12,7 @@ x = 900  # sirka
 
 screen = pg.display.set_mode((x, y))
 
+
 class Player:
     player_img = pg.image.load('imgs/lion.png')
     change_img_pos_y = 0
@@ -77,7 +78,7 @@ class Bomb:
         self.bomb_x_ar = bomb_x
         self.bomb_img_ar = bomb_img
         self.num_of_bombs = nums_of_bombs
-        self.speed = random.randint(1, 6)
+        self.speed = random.randint(1, 5)
         self.last_bomb_posx = 0
         self.last_bomb_posy = 0
         self.index = 0
@@ -115,19 +116,17 @@ class Bomb:
     def show_bombs(self):
         for i in range(self.num_of_bombs):
             screen.blit(self.bomb_img_ar[i], (self.bomb_x_ar[i], self.bomb_y_ar[i]))
-            self.bomb_y_ar[i] += self.speed
+            self.bomb_y_ar[i] += random.randint(1, 5)
 
 
     def check_bomb_pos_y(self):
-        if self.bomb_y_ar[self.num_of_bombs - 1] >= x - 64:
-            self.num_of_bombs += 1
+        for i in range(self.num_of_bombs):
+            if self.bomb_y_ar[i] <= 800:
+                self.bomb_y_ar = 0
 
 
 # background img
 background_img = pg.image.load('imgs/savana3.png')
-
-# nuclear explosion img
-exp_img = pg.image.load('imgs/nuclear-explosion.png')
 
 bomb = Bomb(Bomb.bomb_y_ar, Bomb.bomb_x_ar, Bomb.bomb_img_ar, Bomb.num_of_bombs)
 player = Player(Player.player_pos_y, Player.player_pos_x, Player.player_img, Player.change_img_pos_x,  Player.change_img_pos_y)
@@ -135,7 +134,7 @@ player = Player(Player.player_pos_y, Player.player_pos_x, Player.player_img, Pla
 if __name__ == "__main__":
     bomb.add_bombs()
 
-while True:
+while not bomb.detect_collision():
 
     if bomb.detect_collision():
         bomb.show_bomb_explosion()
@@ -149,7 +148,6 @@ while True:
     player.show_player()
 
     bomb.show_bombs()
-
 
     pg.display.update()
 

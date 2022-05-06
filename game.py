@@ -7,11 +7,37 @@ from pygame import mixer
 
 pg.init()
 
-y = 800  # vyska
-x = 900  # sirka
 
-screen = pg.display.set_mode((x, y))
 
+
+class Game:
+    def __init__(self):
+        self.run_again = True
+
+    def set_true(self):
+        self.run_again = True
+        return self.run_again
+
+    def set_false(self):
+        self.run_again = False
+        return self.run_again
+
+
+game = Game()
+
+class Screen:
+
+    def __init__(self):
+        self.x = 900
+        self.y = 800
+
+    def set_mode(self):
+        screen = pg.display.set_mode((self.x, self.y))
+        return screen
+
+# init screen
+s = Screen()
+screen = s.set_mode()
 
 class Player:
     player_img = pg.image.load('imgs/lion.png')
@@ -110,8 +136,8 @@ class Bomb:
                     screen.blit(self.bomb_img_ar[j], (self.bomb_x_ar[j], self.bomb_y_ar[j]))
                     pg.display.update()
 
-                return True
-        return False
+                return game.set_true()
+        return game.set_false()
 
     def show_bombs(self):
         for i in range(self.num_of_bombs):
@@ -121,8 +147,19 @@ class Bomb:
 
     def check_bomb_pos_y(self):
         for i in range(self.num_of_bombs):
-            if self.bomb_y_ar[i] <= 800:
-                self.bomb_y_ar = 0
+            if self.bomb_y_ar[i] > 800 - 64:
+                self.bomb_y_ar[i] = 0
+                self.bomb_x_ar[i] = 0
+                self.bomb_x_ar[i] = random.randint(0, s.x - 64)
+                print(f'bomb x pos is {self.bomb_x_ar[i]}')
+                print(self.bomb_y_ar[i])
+
+    def check_bomb_pos_x(self):
+        for i in range(self.num_of_bombs):
+
+            sorted = self.bomb_x_ar.sort()
+            min = sorted[:1]
+            max = sorted[-1]
 
 
 # background img
@@ -136,6 +173,7 @@ if __name__ == "__main__":
 
 while not bomb.detect_collision():
 
+
     if bomb.detect_collision():
         bomb.show_bomb_explosion()
 
@@ -148,6 +186,8 @@ while not bomb.detect_collision():
     player.show_player()
 
     bomb.show_bombs()
+
+    bomb.check_bomb_pos_y()
 
     pg.display.update()
 

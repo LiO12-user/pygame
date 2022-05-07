@@ -39,6 +39,16 @@ class Screen:
 s = Screen()
 screen = s.set_mode()
 
+class Texts:
+    def __init__(self):
+        self.font = pygame.font.Font('freesansbold.ttf', 32)
+
+    def show_text(self, text):
+        over_text = self.font.render(str(text), True, (255, 255, 255))
+        screen.blit(over_text, (800, 700))
+
+text = Texts()
+
 class Player:
     player_img = pg.image.load('imgs/lion.png')
     change_img_pos_y = 0
@@ -53,6 +63,7 @@ class Player:
         self.player_img = img
         self.change_img_pos_x = change_img_pos_x
         self.change_img_pos_y = change_img_pos_y
+        self.boost_charges = 5
 
 
     def show_player(self):
@@ -64,12 +75,22 @@ class Player:
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_LEFT:
                     self.change_img_pos_x = -5
+
                 if event.key == pg.K_RIGHT:
                     self.change_img_pos_x = 5
+
                 if event.key == pg.K_UP:
                     self.change_img_pos_y = -5
+
                 if event.key == pg.K_DOWN:
                     self.change_img_pos_y = 5
+
+                if event.key == pg.K_SPACE:
+                    self.change_img_pos_x *= 4
+                    self.change_img_pos_y *= 4
+                    self.boost_charges -= 1
+
+
             if event.type == pg.KEYUP:
                 if event.type == pg.K_LEFT or pg.K_RIGHT:
                     self.change_img_pos_x = 0
@@ -89,7 +110,6 @@ class Player:
 
         if self.player_pos_y <= 0:
             self.player_pos_y = 0
-
 
 class Bomb:
     bomb_x_ar = []
@@ -173,7 +193,6 @@ if __name__ == "__main__":
 
 while not bomb.detect_collision():
 
-
     if bomb.detect_collision():
         bomb.show_bomb_explosion()
 
@@ -188,6 +207,8 @@ while not bomb.detect_collision():
     bomb.show_bombs()
 
     bomb.check_bomb_pos_y()
+
+    text.show_text(player.boost_charges)
 
     pg.display.update()
 

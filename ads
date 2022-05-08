@@ -1,2 +1,2 @@
-pridat zobrazenie polohy bomby a hraca pri kolizi
+pridat zobrazenie polohy bomby a hraca pri kolizi - done
 

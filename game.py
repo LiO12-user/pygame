@@ -161,8 +161,13 @@ class Bomb:
 
     def detect_collision(self):
         for l in range(6):
-           if player.player_pos_x > self.bomb_x_ar[l] and player.player_pos_x < self.bomb_x_ar[l] + 60 and player.player_pos_y > self.bomb_x_ar[l] and player.player_pos_y < self.bomb_y_ar[l]+60 or player.player_pos_x+64 > self.bomb_x_ar[l] and player.player_pos_x < self.bomb_x_ar[l]+60 and player.player_pos_y +60 > self.bomb_y_ar[l] and player.player_pos_y < self.bomb_y_ar[l]+60:
+           if player.player_pos_x > self.bomb_x_ar[l]+10 and player.player_pos_x < self.bomb_x_ar[l] + 60 and player.player_pos_y > self.bomb_x_ar[l]+10 and player.player_pos_y < self.bomb_y_ar[l]+60 or player.player_pos_x+64 > self.bomb_x_ar[l]+10 and player.player_pos_x < self.bomb_x_ar[l]+60 and player.player_pos_y +60 > self.bomb_y_ar[l]+10 and player.player_pos_y < self.bomb_y_ar[l]+60:
                 print('collision')
+                print(f'p y {player.player_pos_y}')
+                print(f'p x {player.player_pos_x}')
+                print(f'b y {bomb.bomb_y_ar[l]}')
+                print(f'b x {bomb.bomb_x_ar[l]}')
+
                 self.speed = 0
                 self.last_bomb_posx = self.bomb_x_ar[l]
                 self.last_bomb_posy = self.bomb_y_ar[l]

@@ -41,16 +41,16 @@ def encrypt(subj):
 
     return out
 
-name = ask_for_data('name')
-hashed_name = hash(name)
+def register_person():
+    name = ask_for_data('name')
+    hashed_name = hash(name)
 
-password = ask_for_data('password')
-hashed_password = hash(password)
+    password = ask_for_data('password')
+    hashed_password = hash(password)
 
-print(f'name is {name}')
-print(f'hashed name is {hashed_name}')
-print(f'hashed pass is {hashed_password}')
+    print(f'name is {name}')
+    print(f'hashed name is {hashed_name}')
+    print(f'hashed pass is {hashed_password}')
 
-c.insert_data(name, hashed_password, 1, hashed_name)
+    c.insert_data(name, hashed_password, 1, hashed_name)
 
-# pridat vyberanie data z database

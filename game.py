@@ -7,9 +7,6 @@ from pygame import mixer
 
 pg.init()
 
-
-
-
 class Game:
     def __init__(self):
         self.run_again = True

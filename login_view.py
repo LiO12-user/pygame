@@ -4,15 +4,14 @@ import Login as lg
 from tkinter import *
 import time
 
-root = Tk()
 
+root = Tk()
 e = Entry(root, width = 50)
+
 e.pack()
 
 e2 = Entry(root, width = 50)
 e2.pack()
-
-
 
 def store_value():
     name = e.get()
@@ -34,8 +33,10 @@ user_pass = store_pass_value()
 def log():
     if lg.login(store_value(), store_pass_value()):
         show_label('loged successful', 'green')
+        return True
     else:
         show_label('something went wrong', 'red')
+        return False
 
 
     # root.quit()
@@ -48,7 +49,5 @@ my_btn3 = Button(root, text = "login", command=log)
 my_btn.pack()
 my_btn2.pack()
 my_btn3.pack()
-
-
 
 root.mainloop()

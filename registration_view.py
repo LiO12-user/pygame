@@ -15,27 +15,31 @@ def main_loop():
 def entry_1():
     return Entry(root, width=50)
 
+e1 = entry_1()
+
 # view
 def entry_2():
     return Entry(root, width=50)
 
+e2 = entry_2()
+
 # show entry 1
 def show_entry_1():
-    return entry_1().pack()
+    return e1.pack()
 
 # show entry 2
 def show_entry_2():
-    return entry_2().pack()
+    return e2.pack()
 
 # getting name from entry 1
 def get_name():
-    print(entry_1().get())
-    return entry_2().get()
+    print(e1.get())
+    return e1.get()
 
 # getting password from entry 2
 def get_password():
-    print(entry_2().get())
-    return entry_2().get()
+    print(e2.get())
+    return e2.get()
 
 # show green label
 def show_green_label():
@@ -47,14 +51,11 @@ def show_red_label():
 
 # log function
 
-e1 = entry_1()
-e2 = entry_2()
-
 def log():
     if lg.login(e1.get(), e2.get()):
         print(get_name())
         print(get_password())
-        show_green_label()
+        show_green_label().pack()
         return True
     else:
         show_red_label()

@@ -5,10 +5,27 @@ from tkinter import *
 import time
 
 
-#root = Tk()
+root = Tk()
+e = Entry(root, width = 50)
 
 e.pack()
+
+e2 = Entry(root, width = 50)
 e2.pack()
+
+def store_value():
+    name = e.get()
+    print(name)
+    return name
+
+def store_pass_value():
+    password = e2.get()
+    print(password)
+    return password
+
+def show_label(text, bg):
+    label = Label(root, bg = bg, text = text, fg='white')
+    label.pack()
 
 user_name = store_value()
 user_pass = store_pass_value()
@@ -34,32 +51,3 @@ my_btn2.pack()
 my_btn3.pack()
 
 root.mainloop()
-
-
-class login_view:
-    def __init__(self, root):
-        self.root = root
-        self.e = Entry(root, width=50)
-        self.e2 = Entry(root, width = 50)
-
-    def store_value(self):
-        name = self.e.get()
-        print(name)
-        return name
-
-
-    def store_pass_value(self):
-        password = self.e2.get()
-        print(password)
-        return password
-
-    def show_label(self, text, bg):
-        label = Label(self.root, bg=bg, text=text, fg='white')
-        label.pack()
-
-
-    def show_entry(self):
-        self.e.pack()
-        self.e2.pack()
-
-

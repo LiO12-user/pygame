@@ -4,8 +4,10 @@ import Login as lg
 # root
 root = Tk()
 
-
+#e = Entry(root, width=50)
+#e.pack()
 # root view
+
 def main_loop():
     return root.mainloop()
 
@@ -27,10 +29,12 @@ def show_entry_2():
 
 # getting name from entry 1
 def get_name():
-    return entry_1().get()
+    print(entry_1().get())
+    return entry_2().get()
 
 # getting password from entry 2
 def get_password():
+    print(entry_2().get())
     return entry_2().get()
 
 # show green label
@@ -42,8 +46,12 @@ def show_red_label():
     return Label(root, bg='red', text='something went wrong', fg='white')
 
 # log function
+
+e1 = entry_1()
+e2 = entry_2()
+
 def log():
-    if lg.login(get_name(), get_password()):
+    if lg.login(e1.get(), e2.get()):
         print(get_name())
         print(get_password())
         show_green_label()
@@ -52,20 +60,19 @@ def log():
         show_red_label()
         return False
 
-# if not working try to create separate buttons without parameters
+# if not working try to create separate buttons without parameters, but working :-)
 def show_button(text, command):
-    return Button(root, text=text, command=command).pack()
+    return Button(root, text=text, command=command)
 
-# test function
-def print_something():
-    print('fkdasjfpdskjfspdfjspdfj')
 
 show_entry_1()
 show_entry_2()
 #get_password()
 #get_name()
-show_button('submit name', print_something())
-show_button('submit password', print_something())
-show_button('submit all', print_something())
+show_button('submit name', get_name).pack()
+show_button('submit password', get_password).pack()
+show_button('submit all', log).pack()
+print('lol')
+print(get_name())
 main_loop()
 

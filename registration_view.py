@@ -1,4 +1,5 @@
 from tkinter import *
+import Registration as r
 import Login as lg
 
 # root
@@ -11,13 +12,13 @@ root = Tk()
 def main_loop():
     return root.mainloop()
 
-# view
+# prve pole do ktoreho sa zadava meno
 def entry_1():
     return Entry(root, width=50)
 
 e1 = entry_1()
 
-# view
+# druhe pole do ktoreho sa zadava heslo
 def entry_2():
     return Entry(root, width=50)
 
@@ -49,31 +50,24 @@ def show_green_label():
 def show_red_label():
     return Label(root, bg='red', text='something went wrong', fg='white')
 
-# log function
-
-def log():
-    if lg.login(e1.get(), e2.get()):
-        print(get_name())
-        print(get_password())
-        show_green_label().pack()
-        return True
-    else:
+# register function
+def register():
+    try:
+        r.register_person(get_name(), get_password())
+        show_green_label()
+    except:
         show_red_label()
-        return False
 
-# if not working try to create separate buttons without parameters, but working :-)
 def show_button(text, command):
     return Button(root, text=text, command=command)
 
-
-show_entry_1()
-show_entry_2()
-#get_password()
-#get_name()
-show_button('submit name', get_name).pack()
-show_button('submit password', get_password).pack()
-show_button('submit all', log).pack()
-print('lol')
-print(get_name())
-main_loop()
+def run_all_stuff():
+    show_entry_1()
+    show_entry_2()
+    #get_password()
+    #get_name()
+    #show_button('submit name', get_name).pack()
+    #show_button('submit password', get_password).pack()
+    show_button('submit all', register).pack()
+    main_loop()
 

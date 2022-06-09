@@ -41,11 +41,11 @@ def encrypt(subj):
 
     return out
 
-def register_person():
-    name = ask_for_data('name')
+def register_person(name, password):
+    #name = ask_for_data('name')
     hashed_name = hash(name)
 
-    password = ask_for_data('password')
+    #password = ask_for_data('password')
     hashed_password = hash(password)
 
     print(f'name is {name}')

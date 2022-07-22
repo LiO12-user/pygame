@@ -130,6 +130,83 @@ class Player:
             self.player_pos_y = 0
 
 
+class Bomb:
+    bomb_x_ar = []
+    bomb_y_ar = []
+    bomb_img_ar = []
+    num_of_bombs = 6
+
+    b_img = pg.image.load('imgs/bomb.png')
+
+    def __init__(self, bomb_y, bomb_x, bomb_img, nums_of_bombs):
+        self.bomb_y_ar = bomb_y
+        self.bomb_x_ar = bomb_x
+        self.bomb_img_ar = bomb_img
+        self.num_of_bombs = nums_of_bombs
+        self.speed = random.randint(1, 5)
+        self.last_bomb_posx = 0
+        self.last_bomb_posy = 0
+        self.index = 0
+
+    def add_bombs(self):
+        for k in range(self.num_of_bombs):
+            self.bomb_img_ar.append(pg.image.load('imgs/bomb.png'))
+            self.bomb_y_ar.append(0)
+            self.bomb_x_ar.append(random.randint(0, 900 - 64))
+
+    def show_bomb_explosion(self):
+        self.bomb_img_ar[self.index] = pg.image.load('imgs/nuclear-explosion.png')
+        screen.blit(self.bomb_img_ar[self.index], (self.last_bomb_posx, self.last_bomb_posy))
+        pg.display.update()
+        time.sleep(1)
+
+    def detect_collision(self):
+        for l in range(6):
+            if player.player_pos_x > self.bomb_x_ar[l] + 10 and player.player_pos_x < self.bomb_x_ar[
+                l] + 60 and player.player_pos_y > self.bomb_x_ar[l] + 10 and player.player_pos_y < self.bomb_y_ar[
+                l] + 60 or player.player_pos_x + 64 > self.bomb_x_ar[l] + 10 and player.player_pos_x < self.bomb_x_ar[
+                l] + 60 and player.player_pos_y + 60 > self.bomb_y_ar[l] + 10 and player.player_pos_y < self.bomb_y_ar[
+                l] + 60:
+                print('collision')
+                print(f'p y {player.player_pos_y}')
+                print(f'p x {player.player_pos_x}')
+                print(f'b y {bomb.bomb_y_ar[l]}')
+                print(f'b x {bomb.bomb_x_ar[l]}')
+
+                self.speed = 0
+                self.last_bomb_posx = self.bomb_x_ar[l]
+                self.last_bomb_posy = self.bomb_y_ar[l]
+                self.index = l
+
+                for j in range(self.num_of_bombs):
+                    self.bomb_x_ar[j] = -2000
+                    screen.blit(self.bomb_img_ar[j], (self.bomb_x_ar[j], self.bomb_y_ar[j]))
+                    pg.display.update()
+
+                return game.set_true()
+        return game.set_false()
+
+    def show_bombs(self):
+        for i in range(self.num_of_bombs):
+            screen.blit(self.bomb_img_ar[i], (self.bomb_x_ar[i], self.bomb_y_ar[i]))
+            self.bomb_y_ar[i] += random.randint(1, 5)
+
+    def check_bomb_pos_y(self):
+        for i in range(self.num_of_bombs):
+            if self.bomb_y_ar[i] > 800 - 64:
+                self.bomb_y_ar[i] = 0
+                self.bomb_x_ar[i] = 0
+                self.bomb_x_ar[i] = random.randint(0, s.x - 64)
+                print(f'bomb x pos is {self.bomb_x_ar[i]}')
+                print(self.bomb_y_ar[i])
+
+    def check_bomb_pos_x(self):
+        for i in range(self.num_of_bombs):
+            sorted = self.bomb_x_ar.sort()
+            min = sorted[:1]
+            max = sorted[-1]
+
+
 class Bonus:
 
     def __init__(self):
@@ -141,99 +218,37 @@ class Bonus:
     def spawn_cake(self):
         screen.blit(self.bonus_img, (self.x, self.y))
 
+
     def cake_move(self):
         self.y += self.speed
         if self.y > 800:
             self.y = 0
-            self.x = random.randint(0, 900 - 64)
+            self.x = random.randint(0, 900-64)
 
     def detect_collision(self):
         if player.player_pos_x > self.x and player.player_pos_x < self.x + 32 and player.player_pos_y > self.y and player.player_pos_y < self.y + 32 or player.player_pos_x + 64 > self.x and player.player_pos_x + 64 < self.x + 32 and player.player_pos_y + 64 > self.y and player.player_pos_y + 64 < self.y + 32:
             player.boost_charges += 1
             self.y = 0
-            self.x = random.randint(0, 900 - 64)
+            self.x = random.randint(0, 900-64)
             self.speed += 0.5
 
     # background img
 
-arrow_img = pg.image.load('imgs/arrow.png')
-class Arrow:
-
-    def __init__(self):
-        self.num_of_arrows = 8
-        self.arrow_img_array = []
-        self.arrow_pos_y_array = []
-        self.arrow_img = pg.image.load('imgs/arrow.png')
-
-
-    def detect_collision(self):
-        pass
-
-    def return_img(self):
-        return self.arrow_img
-
-    def add_arrows(self):
-        for i in range(self.num_of_arrows):
-            self.arrow_img_array.append(self.arrow_img)
-            self.arrow_pos_y_array.append(128)
-
-
-arrow = Arrow()
-arrow.add_arrows()
-
-
-class Hunter():
-    def __init__(self):
-        self.hunter_pos_x = 0
-        self.hunter_pos_y = 0
-        self.hunter_img = pg.image.load('imgs/caveman.png')
-        self.arrow_image = pg.image.load('imgs/arrow.png')
-
-    def hunter_move_and_fire_arrow(self):
-        self.hunter_pos_x = random.randint(0, 900 - 128)
-
-        screen.blit(self.arrow_image, (self.hunter_pos_x, 128))
-
-    def show_hunter(self):
-        screen.blit(self.hunter_img, (self.hunter_pos_x, self.hunter_pos_y))
-
-    def show_arrow(self):
-        arrow_x = self.hunter_pos_x
-        z = 0
-        if z == 9:
-            z = 0
-        screen.blit(self.arrow_image, (arrow_x, arrow.arrow_pos_y_array[z]))
-
-        z += 1
-
-    def move_arrows(self):
-        for q in range(arrow.num_of_arrows):
-          screen.blit(arrow.arrow_img_array[q], (hunter.hunter_pos_x, arrow.arrow_pos_y_array[q]))
-          arrow.arrow_pos_y_array[q] = arrow.arrow_pos_y_array[q] + 5
-
-
-hunter = Hunter()
 
 background_img = pg.image.load('imgs/savana3.png')
-# bomb = Bomb(Bomb.bomb_y_ar, Bomb.bomb_x_ar, Bomb.bomb_img_ar, Bomb.num_of_bombs)
+bomb = Bomb(Bomb.bomb_y_ar, Bomb.bomb_x_ar, Bomb.bomb_img_ar, Bomb.num_of_bombs)
 bns = Bonus()
 player = Player(Player.player_pos_y, Player.player_pos_x, Player.player_img, Player.change_img_pos_x,
                 Player.change_img_pos_y)
 
-# do it by arrow (not bomb.detect_collision())
-count = 0
-while True:
-    # if bomb.detect_collision():
-    #   bomb.show_bomb_explosion()
-    if count % 30 == 0:
-        print(f'count is :{count}')
-        hunter.hunter_move_and_fire_arrow()
-        hunter.show_arrow()
-        pg.display.update()
 
+if __name__ == "__main__":
+    bomb.add_bombs()
 
+while not bomb.detect_collision():
 
-    hunter.move_arrows()
+    if bomb.detect_collision():
+        bomb.show_bomb_explosion()
 
     screen.fill((0, 0, 0))
 
@@ -243,7 +258,9 @@ while True:
 
     player.show_player()
 
-    hunter.show_hunter()
+    bomb.show_bombs()
+
+    bomb.check_bomb_pos_y()
 
     text.show_text(f'norm: {player.boost_charges}', 750, 700)
     text.show_text(f'mega: {player.mega_boost_charges}', 750, 650)
@@ -252,6 +269,4 @@ while True:
     bns.cake_move()
     bns.detect_collision()
 
-    count = count + 1
-    print(count)
     pg.display.update()

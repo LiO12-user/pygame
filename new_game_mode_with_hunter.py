@@ -1,9 +1,7 @@
-import pygame as pg
 import random
-import time
 
+import pygame as pg
 import pygame.font
-from pygame import mixer
 
 pg.init()
 
@@ -154,62 +152,117 @@ class Bonus:
             self.x = random.randint(0, 900 - 64)
             self.speed += 0.5
 
-    # background img
 
 arrow_img = pg.image.load('imgs/arrow.png')
-class Arrow:
+img = pygame.transform.rotate(arrow_img, 180)
 
+current_hunter_position = 0
+
+
+# urobit to iba s jednym sipom
+class Arrow:
+    # arrow x = player x
     def __init__(self):
-        self.num_of_arrows = 8
+        self.num_of_arrows = 6
+        self.img = pg.image.load('imgs/arrow.png')
+        self.y = 0
         self.arrow_img_array = []
         self.arrow_pos_y_array = []
-        self.arrow_img = pg.image.load('imgs/arrow.png')
+        self.arrow_pos_x_array = []
+        self.position = 1
+        self.state = 'unready'
+        self.img = pygame.transform.rotate(self.img, 180)
+        self.dead_lion = pg.image.load('imgs/dead_lion.png')
+        self.img_size = (64, 64)
+        self.dead_lion = pg.transform.scale(self.dead_lion, self.img_size)
+        self.value = 0
 
+    #################################################
+
+    # one arrow firing
+
+    def check_pos(self):
+        if self.y < 800 - 64 and self.y > 0:
+            self.state = 'unready'
+            return self.state
+        else:
+            self.y = self.value
+            self.state = 'ready'
+            return self.state
+
+    def show_one_arrow(self, x):
+        screen.blit(self.img, (x, self.y))
 
     def detect_collision(self):
-        pass
+        if player.player_pos_x > current_hunter_position + 10 and player.player_pos_x < current_hunter_position + 60 and player.player_pos_y > self.y + 10 and player.player_pos_y < self.y + 60 or player.player_pos_x + 64 > current_hunter_position + 10 and player.player_pos_x < current_hunter_position + 60 and player.player_pos_y + 60 > \
+                self.y + 10 and player.player_pos_y < self.y + 60:
+            print('collision detecalseted')
+            player.player_img = self.dead_lion
+            #screen.blit(self.dead_lion, (player.player_pos_x, player.player_pos_y))
+            hunter.hunter_pos_y = -2222
+            hunter.player_pos_x = -2222
+            self.value = -2222
+            pg.display.update()
+            return False
 
-    def return_img(self):
-        return self.arrow_img
+    def move_arrow(self):
+        self.y += random.randint(6, 15)
 
-    def add_arrows(self):
+    ################################################
+    def init_arrows(self):
         for i in range(self.num_of_arrows):
-            self.arrow_img_array.append(self.arrow_img)
-            self.arrow_pos_y_array.append(128)
+            self.arrow_img_array.append(self.img)
+            self.arrow_pos_y_array.append(self.y)
+            self.arrow_pos_x_array.append(0 - 64)
+
+    # only shownig def
+    def show_arrow(self):
+        screen.blit(self.arrow_img_array[self.position],
+                    (self.arrow_pos_x_array[self.position], self.arrow_pos_y_array[self.position]))
+        self.position += 1
+        if self.position == 6:
+            self.position = 0
+
+    # arrow movement
+    def arrow_move(self):
+        # screen.blit(img, (x, self.y))
+        self.y += 2
 
 
 arrow = Arrow()
-arrow.add_arrows()
 
 
+# hunter class
 class Hunter():
     def __init__(self):
         self.hunter_pos_x = 0
         self.hunter_pos_y = 0
         self.hunter_img = pg.image.load('imgs/caveman.png')
         self.arrow_image = pg.image.load('imgs/arrow.png')
+        # arrow section
 
-    def hunter_move_and_fire_arrow(self):
-        self.hunter_pos_x = random.randint(0, 900 - 128)
-
-        screen.blit(self.arrow_image, (self.hunter_pos_x, 128))
-
-    def show_hunter(self):
+    # showing hunter
+    def show(self):
         screen.blit(self.hunter_img, (self.hunter_pos_x, self.hunter_pos_y))
 
-    def show_arrow(self):
+    # moving hunter on the ground
+    def move(self):
+        self.hunter_pos_x += 5
+        if self.hunter_pos_x + 128 > 800:
+            self.hunter_pos_x = 0
+
+    def show_arrow(self, x, y):
+        screen.blit(self.arrow_image, (x, y))
+        pg.display.update()
+
+    # hunter fire arrow
+    def fire_arrow(self):
         arrow_x = self.hunter_pos_x
-        z = 0
-        if z == 9:
-            z = 0
-        screen.blit(self.arrow_image, (arrow_x, arrow.arrow_pos_y_array[z]))
-
-        z += 1
-
-    def move_arrows(self):
-        for q in range(arrow.num_of_arrows):
-          screen.blit(arrow.arrow_img_array[q], (hunter.hunter_pos_x, arrow.arrow_pos_y_array[q]))
-          arrow.arrow_pos_y_array[q] = arrow.arrow_pos_y_array[q] + 5
+        arrow_y = 128
+        a = random.randint(0, 2)
+        print(f'a is {a}')
+        if a == 1:
+            screen.blit(self.arrow_image, (arrow_x, arrow_y))
 
 
 hunter = Hunter()
@@ -221,29 +274,35 @@ player = Player(Player.player_pos_y, Player.player_pos_x, Player.player_img, Pla
                 Player.change_img_pos_y)
 
 # do it by arrow (not bomb.detect_collision())
-count = 0
-while True:
-    # if bomb.detect_collision():
-    #   bomb.show_bomb_explosion()
-    if count % 30 == 0:
-        print(f'count is :{count}')
-        hunter.hunter_move_and_fire_arrow()
-        hunter.show_arrow()
-        pg.display.update()
 
+b = True
 
-
-    hunter.move_arrows()
-
+while not arrow.detect_collision():
+    # funcs must be run: hunter_show, hunter_move, hunter_fire_arrow, show_player, player_move, bonus...
     screen.fill((0, 0, 0))
-
     screen.blit(background_img, (0, 0))
 
-    player.move()
+    hunter.show()
+    hunter.move()
+
+    ###################
+
+    if arrow.check_pos() == 'ready':
+        current_hunter_position = hunter.hunter_pos_x
+        arrow.show_one_arrow(current_hunter_position)
+        arrow.move_arrow()
+    else:
+        arrow.detect_collision()
+        arrow.move_arrow()
+        arrow.show_one_arrow(current_hunter_position)
+
+    ###################
+
+    # arrow.show_arrow()
+    # arrow.arrow_move()
 
     player.show_player()
-
-    hunter.show_hunter()
+    player.move()
 
     text.show_text(f'norm: {player.boost_charges}', 750, 700)
     text.show_text(f'mega: {player.mega_boost_charges}', 750, 650)
@@ -252,6 +311,4 @@ while True:
     bns.cake_move()
     bns.detect_collision()
 
-    count = count + 1
-    print(count)
     pg.display.update()

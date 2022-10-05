@@ -282,6 +282,11 @@ while not arrow.detect_collision():
     screen.fill((0, 0, 0))
     screen.blit(background_img, (0, 0))
 
+    # mouse movement test
+    mouse_x, mouse_y = pygame.mouse.get_pos()
+    print(f'mouse pos is:{mouse_x, mouse_y}')
+
+
     hunter.show()
     hunter.move()
 

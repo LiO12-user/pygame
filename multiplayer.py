@@ -59,6 +59,7 @@ class Player:
     player_pos_y = 800 - 64
     player_pos_x = 900 - 64
 
+
     def __init__(self, pos_y, pos_x, img, change_img_pos_x, change_img_pos_y):
         self.player_pos_y = pos_y
         self.player_pos_x = pos_x
@@ -128,3 +129,235 @@ class Player:
 
         if self.player_pos_y <= 0:
             self.player_pos_y = 0
+
+
+
+class Player_2:
+    player_img_2 = pg.image.load('imgs/crocodile.png')
+    change_img_pos_y_2 = 0
+    change_img_pos_x_2 = 0
+    player_pos_y_2 = 800 - 64
+    player_pos_x_2 = 900 - 64
+
+    def __init__(self, pos_y, pos_x, img, change_img_pos_x, change_img_pos_y):
+        self.player_pos_y_2 = pos_y
+        self.player_pos_x_2 = pos_x
+        self.player_img_2 = img
+        self.change_img_pos_x_2 = change_img_pos_x
+        self.change_img_pos_y_2 = change_img_pos_y
+        self.boost_charges_2 = 5
+        self.mega_boost_charges_2 = 2
+        self.val_2 = 4
+        self.val2_2 = 8
+        self.val3_3 = 1
+        self.val4_4 = 1
+
+    def show_player(self):
+        screen.blit(self.player_img_2, (self.player_pos_x_2, self.player_pos_y_2))
+
+    def move2(self):
+        for event in pg.event.get():
+            print('::::::::::::')
+            # player movement
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_a:
+                    print('croc move')
+                    self.change_img_pos_x_2 = -5
+
+                if event.key == pg.K_d:
+                    self.change_img_pos_x_2 = 5
+
+                if event.key == pg.K_w:
+                    self.change_img_pos_y_2 = -5
+
+                if event.key == pg.K_s:
+                    self.change_img_pos_y_2 = 5
+
+                if event.key == pg.K_SPACE:
+                    self.change_img_pos_x_2 *= self.val_2
+                    self.change_img_pos_y_2 *= self.val_2
+                    self.boost_charges_2 -= self.val3_3  # 1
+
+                if event.key == pg.K_DELETE:
+                    self.change_img_pos_x_2 *= self.val2_2
+                    self.change_img_pos_y_2 *= self.val2_2
+                    self.mega_boost_charges_2 -= self.val4_4  # 1
+
+                if self.boost_charges_2 <= 0:
+                    self.val_2 = 1
+                    self.val3_3 = 0
+
+                if self.mega_boost_charges_2 <= 0:
+                    self.val2_2 = 1
+                    self.val4_4 = 0
+
+            if event.type == pg.KEYUP:
+                if event.type == pg.K_LEFT or pg.K_RIGHT:
+                    self.change_img_pos_x_2 = 0
+                    self.change_img_pos_y_2 = 0
+
+        self.player_pos_x_2 += self.change_img_pos_x_2
+        self.player_pos_y_2 += self.change_img_pos_y_2
+
+        if self.player_pos_x_2 >= 836:
+            self.player_pos_x_2 = 836
+
+        if self.player_pos_x_2 <= 0:
+            self.player_pos_x_2 = 0
+
+        if self.player_pos_y_2 >= 733:
+            self.player_pos_y_2 = 733
+
+        if self.player_pos_y_2 <= 0:
+            self.player_pos_y_2 = 0
+
+
+class Bomb:
+    bomb_x_ar = []
+    bomb_y_ar = []
+    bomb_img_ar = []
+    num_of_bombs = 6
+
+    b_img = pg.image.load('imgs/bomb.png')
+
+    def __init__(self, bomb_y, bomb_x, bomb_img, nums_of_bombs):
+        self.bomb_y_ar = bomb_y
+        self.bomb_x_ar = bomb_x
+        self.bomb_img_ar = bomb_img
+        self.num_of_bombs = nums_of_bombs
+        self.speed = random.randint(1, 5)
+        self.last_bomb_posx = 0
+        self.last_bomb_posy = 0
+        self.index = 0
+
+    def add_bombs(self):
+        for k in range(self.num_of_bombs):
+            self.bomb_img_ar.append(pg.image.load('imgs/bomb.png'))
+            self.bomb_y_ar.append(0)
+            self.bomb_x_ar.append(random.randint(0, 900 - 64))
+
+    def show_bomb_explosion(self):
+        self.bomb_img_ar[self.index] = pg.image.load('imgs/nuclear-explosion.png')
+        screen.blit(self.bomb_img_ar[self.index], (self.last_bomb_posx, self.last_bomb_posy))
+        pg.display.update()
+        time.sleep(1)
+
+    def detect_collision(self):
+        for l in range(6):
+            if  player.player_pos_x > self.bomb_x_ar[l] + 10 and player.player_pos_x < self.bomb_x_ar[
+                l] + 60 and player.player_pos_y > self.bomb_x_ar[l] + 10 and player.player_pos_y < self.bomb_y_ar[
+                l] + 60 or player.player_pos_x + 64 > self.bomb_x_ar[l] + 10 and player.player_pos_x < self.bomb_x_ar[
+                l] + 60 and player.player_pos_y + 60 > self.bomb_y_ar[l] + 10 and player.player_pos_y < self.bomb_y_ar[
+                l] + 60 or player2.player_pos_x_2 > self.bomb_x_ar[l] + 10 and player2.player_pos_x_2 < self.bomb_x_ar[
+                l] + 60 and player2.player_pos_y_2 > self.bomb_x_ar[l] + 10 and player2.player_pos_y_2 < self.bomb_y_ar[
+                l] + 60 or player2.player_pos_x_2 + 64 > self.bomb_x_ar[l] + 10 and player2.player_pos_x_2 < self.bomb_x_ar[
+                l] + 60 and player2.player_pos_y_2 + 60 > self.bomb_y_ar[l] + 10 and player2.player_pos_y_2 < self.bomb_y_ar[
+                l] + 60:
+                print('collision')
+                print(f'p y {player.player_pos_y}')
+                print(f'p x {player.player_pos_x}')
+                print(f'b y {bomb.bomb_y_ar[l]}')
+                print(f'b x {bomb.bomb_x_ar[l]}')
+
+                self.speed = 0
+                self.last_bomb_posx = self.bomb_x_ar[l]
+                self.last_bomb_posy = self.bomb_y_ar[l]
+                self.index = l
+
+                for j in range(self.num_of_bombs):
+                    self.bomb_x_ar[j] = -2000
+                    screen.blit(self.bomb_img_ar[j], (self.bomb_x_ar[j], self.bomb_y_ar[j]))
+                    pg.display.update()
+
+                return game.set_true()
+        return game.set_false()
+
+    def show_bombs(self):
+        for i in range(self.num_of_bombs):
+            screen.blit(self.bomb_img_ar[i], (self.bomb_x_ar[i], self.bomb_y_ar[i]))
+            self.bomb_y_ar[i] += random.randint(1, 5)
+
+    def check_bomb_pos_y(self):
+        for i in range(self.num_of_bombs):
+            if self.bomb_y_ar[i] > 800 - 64:
+                self.bomb_y_ar[i] = 0
+                self.bomb_x_ar[i] = 0
+                self.bomb_x_ar[i] = random.randint(0, s.x - 64)
+                print(f'bomb x pos is {self.bomb_x_ar[i]}')
+                print(self.bomb_y_ar[i])
+
+    def check_bomb_pos_x(self):
+        for i in range(self.num_of_bombs):
+            sorted = self.bomb_x_ar.sort()
+            min = sorted[:1]
+            max = sorted[-1]
+
+
+class Bonus:
+
+    def __init__(self):
+        self.bonus_img = pg.image.load('imgs/cupcake.png')
+        self.y = 0
+        self.x = random.randint(0, 900 - 32)
+        self.speed = 1
+
+    def spawn_cake(self):
+        screen.blit(self.bonus_img, (self.x, self.y))
+
+
+    def cake_move(self):
+        self.y += self.speed
+        if self.y > 800:
+            self.y = 0
+            self.x = random.randint(0, 900-64)
+
+    def detect_collision(self):
+        if player.player_pos_x > self.x and player.player_pos_x < self.x + 32 and player.player_pos_y > self.y and player.player_pos_y < self.y + 32 or player.player_pos_x + 64 > self.x and player.player_pos_x + 64 < self.x + 32 and player.player_pos_y + 64 > self.y and player.player_pos_y + 64 < self.y + 32 or player2.player_pos_x_2 > self.x and player2.player_pos_x_2 < self.x + 32 and player2.player_pos_y_2 > self.y and player2.player_pos_y_2 < self.y + 32 or player2.player_pos_x_2 + 64 > self.x and player2.player_pos_x_2 + 64 < self.x + 32 and player2.player_pos_y_2 + 64 > self.y and player2.player_pos_y_2 + 64 < self.y + 32:
+            player.boost_charges += 1
+            self.y = 0
+            self.x = random.randint(0, 900-64)
+            self.speed += 0.5
+
+background_img = pg.image.load('imgs/savana3.png')
+bomb = Bomb(Bomb.bomb_y_ar, Bomb.bomb_x_ar, Bomb.bomb_img_ar, Bomb.num_of_bombs)
+bns = Bonus()
+player = Player(Player.player_pos_y, Player.player_pos_x, Player.player_img, Player.change_img_pos_x,
+                Player.change_img_pos_y)
+
+player2 = Player_2(Player_2.player_pos_y_2, Player_2.player_pos_x_2, Player_2.player_img_2, Player_2.change_img_pos_x_2,
+                   Player_2.change_img_pos_y_2)
+
+
+if __name__ == "__main__":
+    bomb.add_bombs()
+
+while not bomb.detect_collision():
+
+    if bomb.detect_collision():
+        bomb.show_bomb_explosion()
+
+    screen.fill((0, 0, 0))
+
+    screen.blit(background_img, (0, 0))
+
+    player.move()
+
+    player.show_player()
+
+
+    player2.move2()
+
+    player2.show_player()
+
+    bomb.show_bombs()
+
+    bomb.check_bomb_pos_y()
+
+    text.show_text(f'norm: {player.boost_charges}', 750, 700)
+    text.show_text(f'mega: {player.mega_boost_charges}', 750, 650)
+
+    bns.spawn_cake()
+    bns.cake_move()
+    bns.detect_collision()
+
+    pg.display.update()

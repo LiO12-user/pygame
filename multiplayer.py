@@ -59,8 +59,13 @@ class Player:
     player_pos_y = 800 - 64
     player_pos_x = 900 - 64
 
+    player_img_2 = pg.image.load('imgs/crocodile.png')
+    change_img_pos_y_2 = 0
+    change_img_pos_x_2 = 0
+    player_pos_y_2 = 800 - 64
+    player_pos_x_2 = 900 - 64
 
-    def __init__(self, pos_y, pos_x, img, change_img_pos_x, change_img_pos_y):
+    def __init__(self, pos_y, pos_x, img, img2, change_img_pos_x, change_img_pos_y):
         self.player_pos_y = pos_y
         self.player_pos_x = pos_x
         self.player_img = img
@@ -73,8 +78,22 @@ class Player:
         self.val3 = 1
         self.val4 = 1
 
+        #### player 2
+        self.player_pos_y_2 = pos_y
+        self.player_pos_x_2 = pos_x
+        self.player_img_2 = img2
+        self.change_img_pos_x_2 = change_img_pos_x
+        self.change_img_pos_y_2 = change_img_pos_y
+        self.boost_charges_2 = 5
+        self.mega_boost_charges_2 = 2
+        self.val_2 = 4
+        self.val2_2 = 8
+        self.val3_3 = 1
+        self.val4_4 = 1
+
     def show_player(self):
         screen.blit(self.player_img, (self.player_pos_x, self.player_pos_y))
+        screen.blit(self.player_img_2, (self.player_pos_x_2, self.player_pos_y_2))
 
     def move(self):
         for event in pg.event.get():
@@ -110,13 +129,32 @@ class Player:
                     self.val2 = 1
                     self.val4 = 0
 
+                # player 2.......:))))
+
+                if event.key == pg.K_a:
+                    self.change_img_pos_x_2 = -5
+
+                if event.key == pg.K_d:
+                    self.change_img_pos_x_2 = 5
+
+                if event.key == pg.K_w:
+                    self.change_img_pos_y_2 = -5
+
+                if event.key == pg.K_s:
+                    self.change_img_pos_y_2 = 5
+
             if event.type == pg.KEYUP:
                 if event.type == pg.K_LEFT or pg.K_RIGHT:
                     self.change_img_pos_x = 0
                     self.change_img_pos_y = 0
+                    self.change_img_pos_x_2 = 0
+                    self.change_img_pos_y_2 = 0
 
         self.player_pos_x += self.change_img_pos_x
         self.player_pos_y += self.change_img_pos_y
+
+        self.player_pos_x_2 += self.change_img_pos_x_2
+        self.player_pos_y_2 += self.change_img_pos_y_2
 
         if self.player_pos_x >= 836:
             self.player_pos_x = 836
@@ -129,75 +167,6 @@ class Player:
 
         if self.player_pos_y <= 0:
             self.player_pos_y = 0
-
-
-
-class Player_2:
-    player_img_2 = pg.image.load('imgs/crocodile.png')
-    change_img_pos_y_2 = 0
-    change_img_pos_x_2 = 0
-    player_pos_y_2 = 800 - 64
-    player_pos_x_2 = 900 - 64
-
-    def __init__(self, pos_y, pos_x, img, change_img_pos_x, change_img_pos_y):
-        self.player_pos_y_2 = pos_y
-        self.player_pos_x_2 = pos_x
-        self.player_img_2 = img
-        self.change_img_pos_x_2 = change_img_pos_x
-        self.change_img_pos_y_2 = change_img_pos_y
-        self.boost_charges_2 = 5
-        self.mega_boost_charges_2 = 2
-        self.val_2 = 4
-        self.val2_2 = 8
-        self.val3_3 = 1
-        self.val4_4 = 1
-
-    def show_player(self):
-        screen.blit(self.player_img_2, (self.player_pos_x_2, self.player_pos_y_2))
-
-    def move2(self):
-        for event in pg.event.get():
-            print('::::::::::::')
-            # player movement
-            if event.type == pg.KEYDOWN:
-                if event.key == pg.K_a:
-                    print('croc move')
-                    self.change_img_pos_x_2 = -5
-
-                if event.key == pg.K_d:
-                    self.change_img_pos_x_2 = 5
-
-                if event.key == pg.K_w:
-                    self.change_img_pos_y_2 = -5
-
-                if event.key == pg.K_s:
-                    self.change_img_pos_y_2 = 5
-
-                if event.key == pg.K_SPACE:
-                    self.change_img_pos_x_2 *= self.val_2
-                    self.change_img_pos_y_2 *= self.val_2
-                    self.boost_charges_2 -= self.val3_3  # 1
-
-                if event.key == pg.K_DELETE:
-                    self.change_img_pos_x_2 *= self.val2_2
-                    self.change_img_pos_y_2 *= self.val2_2
-                    self.mega_boost_charges_2 -= self.val4_4  # 1
-
-                if self.boost_charges_2 <= 0:
-                    self.val_2 = 1
-                    self.val3_3 = 0
-
-                if self.mega_boost_charges_2 <= 0:
-                    self.val2_2 = 1
-                    self.val4_4 = 0
-
-            if event.type == pg.KEYUP:
-                if event.type == pg.K_LEFT or pg.K_RIGHT:
-                    self.change_img_pos_x_2 = 0
-                    self.change_img_pos_y_2 = 0
-
-        self.player_pos_x_2 += self.change_img_pos_x_2
-        self.player_pos_y_2 += self.change_img_pos_y_2
 
         if self.player_pos_x_2 >= 836:
             self.player_pos_x_2 = 836
@@ -244,15 +213,17 @@ class Bomb:
 
     def detect_collision(self):
         for l in range(6):
-            if  player.player_pos_x > self.bomb_x_ar[l] + 10 and player.player_pos_x < self.bomb_x_ar[
+            if player.player_pos_x > self.bomb_x_ar[l] + 10 and player.player_pos_x < self.bomb_x_ar[
                 l] + 60 and player.player_pos_y > self.bomb_x_ar[l] + 10 and player.player_pos_y < self.bomb_y_ar[
                 l] + 60 or player.player_pos_x + 64 > self.bomb_x_ar[l] + 10 and player.player_pos_x < self.bomb_x_ar[
                 l] + 60 and player.player_pos_y + 60 > self.bomb_y_ar[l] + 10 and player.player_pos_y < self.bomb_y_ar[
                 l] + 60 or player2.player_pos_x_2 > self.bomb_x_ar[l] + 10 and player2.player_pos_x_2 < self.bomb_x_ar[
                 l] + 60 and player2.player_pos_y_2 > self.bomb_x_ar[l] + 10 and player2.player_pos_y_2 < self.bomb_y_ar[
-                l] + 60 or player2.player_pos_x_2 + 64 > self.bomb_x_ar[l] + 10 and player2.player_pos_x_2 < self.bomb_x_ar[
-                l] + 60 and player2.player_pos_y_2 + 60 > self.bomb_y_ar[l] + 10 and player2.player_pos_y_2 < self.bomb_y_ar[
-                l] + 60:
+                l] + 60 or player2.player_pos_x_2 + 64 > self.bomb_x_ar[l] + 10 and player2.player_pos_x_2 < \
+                    self.bomb_x_ar[
+                        l] + 60 and player2.player_pos_y_2 + 60 > self.bomb_y_ar[l] + 10 and player2.player_pos_y_2 < \
+                    self.bomb_y_ar[
+                        l] + 60:
                 print('collision')
                 print(f'p y {player.player_pos_y}')
                 print(f'p x {player.player_pos_x}')
@@ -304,29 +275,28 @@ class Bonus:
     def spawn_cake(self):
         screen.blit(self.bonus_img, (self.x, self.y))
 
-
     def cake_move(self):
         self.y += self.speed
         if self.y > 800:
             self.y = 0
-            self.x = random.randint(0, 900-64)
+            self.x = random.randint(0, 900 - 64)
 
     def detect_collision(self):
         if player.player_pos_x > self.x and player.player_pos_x < self.x + 32 and player.player_pos_y > self.y and player.player_pos_y < self.y + 32 or player.player_pos_x + 64 > self.x and player.player_pos_x + 64 < self.x + 32 and player.player_pos_y + 64 > self.y and player.player_pos_y + 64 < self.y + 32 or player2.player_pos_x_2 > self.x and player2.player_pos_x_2 < self.x + 32 and player2.player_pos_y_2 > self.y and player2.player_pos_y_2 < self.y + 32 or player2.player_pos_x_2 + 64 > self.x and player2.player_pos_x_2 + 64 < self.x + 32 and player2.player_pos_y_2 + 64 > self.y and player2.player_pos_y_2 + 64 < self.y + 32:
             player.boost_charges += 1
             self.y = 0
-            self.x = random.randint(0, 900-64)
+            self.x = random.randint(0, 900 - 64)
             self.speed += 0.5
+
 
 background_img = pg.image.load('imgs/savana3.png')
 bomb = Bomb(Bomb.bomb_y_ar, Bomb.bomb_x_ar, Bomb.bomb_img_ar, Bomb.num_of_bombs)
 bns = Bonus()
-player = Player(Player.player_pos_y, Player.player_pos_x, Player.player_img, Player.change_img_pos_x,
+player = Player(Player.player_pos_y, Player.player_pos_x, Player.player_img, None, Player.change_img_pos_x,
                 Player.change_img_pos_y)
 
-player2 = Player_2(Player_2.player_pos_y_2, Player_2.player_pos_x_2, Player_2.player_img_2, Player_2.change_img_pos_x_2,
-                   Player_2.change_img_pos_y_2)
-
+player2 = Player(Player.player_pos_y_2, Player.player_pos_x_2, None, Player.player_img_2, Player.change_img_pos_x_2,
+                 Player.change_img_pos_y_2)
 
 if __name__ == "__main__":
     bomb.add_bombs()
@@ -343,11 +313,6 @@ while not bomb.detect_collision():
     player.move()
 
     player.show_player()
-
-
-    player2.move2()
-
-    player2.show_player()
 
     bomb.show_bombs()
 
